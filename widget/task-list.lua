@@ -4,6 +4,9 @@ local dpi = require('beautiful').xresources.apply_dpi
 local capi = {button = _G.button}
 local gears = require('gears')
 local clickable_container = require('widget.material.clickable-container')
+
+local display_text = false
+local centerize = false
 --- Common method to create buttons.
 -- @tab buttons
 -- @param object
@@ -116,15 +119,17 @@ local function list_update(w, buttons, label, data, objects)
 
     local text, bg, bg_image, icon, args = label(o, tb)
     args = args or {}
-
+    if display_text == false then
+        text = ''
+    end
     -- The text might be invalid, so use pcall.
     if text == nil or text == '' then
       tbm:set_margins(0)
     else
       -- truncate when title is too long
       local textOnly = text:match('>(.-)<')
-      if (textOnly:len() > 24) then
-        text = text:gsub('>(.-)<', '>' .. textOnly:sub(1, 21) .. '...<')
+      if (textOnly:len() > 24) then        
+	text = text:gsub('>(.-)<', '>' .. textOnly:sub(1, 21) .. '...<')
         tt:set_text(textOnly)
         tt:add_to_object(tb)
       else
@@ -198,8 +203,20 @@ local tasklist_buttons =
   )
 )
 
-local TaskList = function(s)
-  return awful.widget.tasklist(
+local TaskList = function(s,dtext,centerize)
+    display_text = dtext
+    if centerize == true then
+ 	 return awful.widget.tasklist(
+    		s,
+    		awful.widget.tasklist.filter.currenttags,
+    		tasklist_buttons,
+    		{},
+    		list_update,
+    		wibox.layout.fixed.horizontal()
+  		)
+    end
+
+    return awful.widget.tasklist(
     s,
     awful.widget.tasklist.filter.currenttags,
     tasklist_buttons,
