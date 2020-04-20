@@ -119,25 +119,32 @@ local function list_update(w, buttons, label, data, objects)
 
     local text, bg, bg_image, icon, args = label(o, tb)
     args = args or {}
-    if display_text == false then
-        text = ''
-    end
+    -- if display_text == false then
+    --     text = ''
+    -- end
     -- The text might be invalid, so use pcall.
     if text == nil or text == '' then
       tbm:set_margins(0)
     else
+    local textOnly = text:match('>(.-)<')
+      if display_text == false then
+	tt:set_text(textOnly)
+	tb:set_markup(' ')
+	tt:add_to_object(bg_clickable)
+	tbm:set_margins(0)
       -- truncate when title is too long
-      local textOnly = text:match('>(.-)<')
-      if (textOnly:len() > 24) then        
+      elseif (textOnly:len() > 24) then        
 	text = text:gsub('>(.-)<', '>' .. textOnly:sub(1, 21) .. '...<')
         tt:set_text(textOnly)
-        tt:add_to_object(tb)
+        tt:add_to_object(bg_clickable)
       else
         tt:remove_from_object(tb)
       end
-      if not tb:set_markup_silently(text) then
+      if display_text == false then
+      elseif not tb:set_markup_silently(text) then
         tb:set_markup('<i>&lt;Invalid text&gt;</i>')
       end
+
     end
     bgb:set_bg(bg)
     if type(bg_image) == 'function' then

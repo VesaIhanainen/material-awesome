@@ -117,15 +117,15 @@ local TopPanel = function(s, offset)
   )
 
   panel:setup {
-    nil,
-    {
-      layout = wibox.layout.fixed.horizontal,
-      -- Create a taglist widget
-      TaskList(s,false,true),
-      add_button
-      -- id = 'middle-widget'
-    
+	  nil,
+	  {   
+      layout = wibox.layout.align.horizontal,
+      add_button,
+      TaskList(s,true,true),
+      nil
+      --add_button
     },
+   
     
     {
       layout = wibox.layout.fixed.horizontal,
